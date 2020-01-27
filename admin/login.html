@@ -38,6 +38,25 @@
     </div>
   </div>
 
+  <!-- 添加bootstrap模态框： -->
+  <!-- Modal -->
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">温馨提示：</h4>
+        </div>
+        <div class="modal-body">
+          ...
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success" data-dismiss="modal">确定</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </body>
 
 
@@ -52,7 +71,10 @@
     var pass = $('.input_pass').val()
     // 3.判断非空
     if (!username || !pass) {
-      alert('用户名或密码不能为空！')
+      $('#myModal .modal-body').text('用户名和密码不能为空！')
+      $('#myModal').modal()
+      // 终止程序：
+      return
     } else {
       // 4.发送ajax请求：完成登录
       $.ajax({
@@ -63,12 +85,13 @@
           password: pass
         },
         success: function (backData) {
+          $('#myModal .modal-body').text(backData.msg)
+          $('#myModal').modal()
           if (backData.code === 200) {
-            alert(backData.msg)
             // 跳转到登录成功页面：
-            window.location.href = './index.html'
-          } else {
-            alert(backData.msg)
+            $('#myModal').on('hidden.bs.modal', function (e) {
+              window.location.href = './index.html'
+            })
           }
         }
       })
